@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// BottomNavigationBarのindexを管理
+// BottomNavigationBarのindexを切り替える
 final bottomNavIndexProvider = StateProvider((ref) => 0);
 

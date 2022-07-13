@@ -1,130 +1,132 @@
-import 'package:go_router_demo/screens/additional_page.dart';
-import 'package:go_router_demo/screens/error_screen.dart';
-import 'package:go_router_demo/screens/login_screen.dart';
-import 'package:go_router_demo/screens/number_screen.dart';
-import 'package:go_router_demo/screens/bottom_b_page.dart';
-import 'package:go_router_demo/screens/bottom_a_page.dart';
-import 'package:go_router_demo/screens/bottom_c_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:go_router_demo/providers/hide_bottom_navigation_provider.dart';
+import 'package:go_router_demo/screens/bottom_navi_A/bottom_a_top.dart';
+import 'package:go_router_demo/screens/bottom_navi_A/page_a.dart';
+import 'package:go_router_demo/screens/bottom_navi_A/page_b.dart';
+import 'package:go_router_demo/screens/bottom_navi_A/page_c.dart';
+import 'package:go_router_demo/screens/bottom_navi_b/bottom_b_top.dart';
+import 'package:go_router_demo/screens/bottom_navi_b/page_a.dart';
+import 'package:go_router_demo/screens/bottom_navi_b/page_b.dart';
+import 'package:go_router_demo/screens/bottom_navi_b/page_c.dart';
+import 'package:go_router_demo/screens/bottom_navi_c/bottom_c_top.dart';
+import 'package:go_router_demo/screens/bottom_navi_c/page_a.dart';
+import 'package:go_router_demo/screens/bottom_navi_c/page_b.dart';
+import 'package:go_router_demo/screens/bottom_navi_c/page_c.dart';
 import 'package:go_router_demo/widgets/bottom_navigation.dart';
 import 'package:go_router_demo/widgets/empty_bottom_navigation.dart';
 
 // GoRouterクラスはRiverpodで依存注入
-final routerProvider = Provider(
-  (ref) => GoRouter(
+final routerProvider = Provider((ref) {
+  return GoRouter(
     initialLocation: '/bottomA',
     routes: <GoRoute>[
       GoRoute(
-        name: 'bottomA',
         path: '/bottomA',
         // BottomNavigationBarでの画面遷移に見える様、遷移時のアニメーションを調整
         pageBuilder: (context, state) => CustomTransitionPage(
             key: state.pageKey,
-            child: const BottomANavigationScreen(),
+            child: const BottomNavigationTopA(),
             transitionDuration: Duration.zero,
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) => child),
         routes: [
-          // サブルートへの画面遷移のサンプル
           GoRoute(
-            name: 'login',
-            path: 'login',
+            path: 'pageA',
             pageBuilder: (context, state) => MaterialPage(
               key: state.pageKey,
-              child: const LoginScreen(),
+              child: const BottomAPageA(),
             ),
           ),
-          // 引数を渡す画面遷移のサンプル
           GoRoute(
-            name: 'number',
-            path: 'number/:id',
-            builder: (context, state) {
-              final id = state.params['id']!;
-              return NumberScreen(number: id);
-            },
+            path: 'pageB',
+            pageBuilder: (context, state) => MaterialPage(
+              key: state.pageKey,
+              child: const BottomAPageB(),
+            ),
+          ),
+          GoRoute(
+            path: 'pageC',
+            pageBuilder: (context, state) => MaterialPage(
+              key: state.pageKey,
+              child: const BottomAPageC(),
+            ),
           ),
         ],
       ),
       GoRoute(
-        name: 'bottomB',
         path: '/bottomB',
         // BottomNavigationBarでの画面遷移に見える様、遷移時のアニメーションを調整
         pageBuilder: (context, state) => CustomTransitionPage(
             key: state.pageKey,
-            child: const BottomBNavigationScreen(),
+            child: const BottomNavigationTopB(),
             transitionDuration: Duration.zero,
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) => child),
-      ),
-      GoRoute(
-        name: 'bottomC',
-        path: '/bottomC',
         routes: [
           GoRoute(
-            name: 'pageA',
-            path: 'page_a',
+            path: 'pageA',
             pageBuilder: (context, state) => MaterialPage(
               key: state.pageKey,
-              child: PageA(key: state.pageKey),
+              child: const BottomBPageA(),
             ),
           ),
           GoRoute(
-            name: 'pageB',
-            path: 'page_b',
+            path: 'pageB',
             pageBuilder: (context, state) => MaterialPage(
               key: state.pageKey,
-              child: PageB(key: state.pageKey),
+              child: const BottomBPageB(),
             ),
           ),
           GoRoute(
-            name: 'pageC',
-            path: 'page_c',
+            path: 'pageC',
             pageBuilder: (context, state) => MaterialPage(
               key: state.pageKey,
-              child: PageC(key: state.pageKey),
+              child: const BottomBPageC(),
             ),
           ),
         ],
-        // BottomNavigationBarでの画面遷移に見える様、遷移時のアニメーションを調整
-        pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const TabBarNavigationScreen(),
-          transitionDuration: Duration.zero,
-          transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-              child,
-        ),
       ),
       GoRoute(
-        name: 'additional',
-        path: '/additional',
-        pageBuilder: (context, state) => MaterialPage(
-          key: state.pageKey,
-          child: const AdditionalPage(),
-        ),
+        path: '/bottomC',
+        // BottomNavigationBarでの画面遷移に見える様、遷移時のアニメーションを調整
+        pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const BottomNavigationTopC(),
+            transitionDuration: Duration.zero,
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) => child),
+        routes: [
+          GoRoute(
+            path: 'pageA',
+            pageBuilder: (context, state) => MaterialPage(
+              key: state.pageKey,
+              child: const BottomCPageA(),
+            ),
+          ),
+          GoRoute(
+            path: 'pageB',
+            pageBuilder: (context, state) => MaterialPage(
+              key: state.pageKey,
+              child: const BottomCPageB(),
+            ),
+          ),
+          GoRoute(
+            path: 'pageC',
+            pageBuilder: (context, state) => MaterialPage(
+              key: state.pageKey,
+              child: const BottomCPageC(),
+            ),
+          ),
+        ],
       ),
     ],
-
-    /// エラー画面
-    errorPageBuilder: (context, state) => MaterialPage(
-      key: state.pageKey,
-      child: ErrorScreen(
-        exception: state.error,
-      ),
-    ),
     navigatorBuilder: (context, state, child) {
-      // GoRouterクラスの上に常に重なるNavigatorクラスを定義。
-      // このNavigatorクラスにBottomNavigationBarを渡す事で永続化できる。
-      const List<String> hideBottomNavigationPageList = [
-        '/bottomC/page_c',
-        '/additional',
-      ];
-
-      final hideBottomNavigation =
-          hideBottomNavigationPageList.contains(state.location);
-
-      if (hideBottomNavigation) {
+      /// Providerで判定処理
+      if (ref
+          .read(hideBottomNavigationProvider)
+          .isHideBottomNavigation(state.location)) {
         return Navigator(
           onPopPage: (route, dynamic __) => false,
           pages: [
@@ -148,5 +150,5 @@ final routerProvider = Provider(
         );
       }
     },
-  ),
-);
+  );
+});
