@@ -19,56 +19,55 @@ $ flutter run
 ```
 
 ## 主要箇所
+
+### route.dart
 ```dart
-final routerProvider = Provider(
-  (ref) => GoRouter(
+final routerProvider = Provider((ref) {
+  return GoRouter(
     initialLocation: '/bottomA',
     routes: <GoRoute>[
-      /// BottomNavigationのタブでグループを作成する
       GoRoute(
-        name: 'bottomA',
         path: '/bottomA',
+        // BottomNavigationBarでの画面遷移に見える様、遷移時のアニメーションを調整
         pageBuilder: (context, state) => CustomTransitionPage(
             key: state.pageKey,
-            child: const BottomANavigationScreen(), // 親ページ
+            child: const BottomNavigationTopA(),
             transitionDuration: Duration.zero,
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) => child),
-        /// BNB内部で遷移したいページ一覧を定義
         routes: [
           GoRoute(
-            name: 'login',
-            path: 'login',
+            path: 'pageA',
             pageBuilder: (context, state) => MaterialPage(
               key: state.pageKey,
-              child: const LoginScreen(),
+              child: const BottomAPageA(),
             ),
           ),
-          // 引数を渡す画面遷移のサンプル
           GoRoute(
-            name: 'number',
-            path: 'number/:id',
-            builder: (context, state) {
-              final id = state.params['id']!;
-              return NumberScreen(number: id);
-            },
+            path: 'pageB',
+            pageBuilder: (context, state) => MaterialPage(
+              key: state.pageKey,
+              child: const BottomAPageB(),
+            ),
+          ),
+          GoRoute(
+            path: 'pageC',
+            pageBuilder: (context, state) => MaterialPage(
+              key: state.pageKey,
+              child: const BottomAPageC(),
+            ),
           ),
         ],
       ),
+      .......
+      .......
     ],
-    
-    /// 画面に常時表示するウィジェットを定義できる
+    // Navigatorに関係なく常時表示する場合に使える
     navigatorBuilder: (context, state, child) {
-      // BNBの非表示リスト
-      const List<String> hideBottomNavigationPageList = [
-        '/bottomC/page_c',
-        '/additional',
-      ];
-      // 非表示判定
-      final hideBottomNavigation =
-          hideBottomNavigationPageList.contains(state.location);
-      /// Navigator, MaterialPageを使ってViewを返す。
-      if (hideBottomNavigation) {
+      /// Providerで判定処理
+      if (ref
+          .read(hideBottomNavigationProvider)
+          .isHideBottomNavigation(state.location)) {
         return Navigator(
           onPopPage: (route, dynamic __) => false,
           pages: [
@@ -92,6 +91,33 @@ final routerProvider = Provider(
         );
       }
     },
-  ),
+  );
+});
+```
+
+### provider
+雑ですが判定処理してます
+```dart
+final hideBottomNavigationProvider =
+    ChangeNotifierProvider<HideBottomNavigation>(
+  (ref) {
+    return HideBottomNavigation();
+  },
 );
+
+class HideBottomNavigation extends ChangeNotifier {
+  HideBottomNavigation();
+  
+  // BottomNavigationを隠したいルート一覧
+  static const List<String> hideBottomNavigationPageList = [
+    '/bottomC/pageA',
+    '/bottomC/pageB',
+    '/bottomC/pageC',
+  ];
+
+  /// [hideBottomNavigationPageList]に含まれる場合BNBを非表示にする
+  bool isHideBottomNavigation(String currentPath) {
+    return hideBottomNavigationPageList.contains(currentPath);
+  }
+}
 ```
